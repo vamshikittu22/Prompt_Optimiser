@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import { Lightbulb, MessageSquare, CheckCircle, Copy, RotateCcw, Sparkles } from 'lucide-react';
-
-interface Question {
-  id: number;
-  text: string;
-  answer: string;
-}
+import { Lightbulb, MessageSquare, CheckCircle, Copy, RotateCcw, Sparkles, AlertCircle, Loader } from 'lucide-react';
+import { GeminiService } from './services/geminiService';
+import { Question } from './types';
 
 function App() {
   const [userIdea, setUserIdea] = useState('');
@@ -14,49 +10,41 @@ function App() {
   const [currentStep, setCurrentStep] = useState(1);
   const [finalPrompt, setFinalPrompt] = useState('');
   const [copied, setCopied] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const generateQuestions = () => {
+  const generateQuestions = async () => {
     if (!userIdea.trim() || !overInstructions.trim()) {
-      alert('Please fill in both the User Idea and Overarching Instructions fields.');
+      setError('Please fill in both the User Idea and Overarching Instructions fields.');
       return;
     }
 
-    // Generate 3-6 clarifying questions based on the framework
-    const generatedQuestions: Question[] = [
-      {
-        id: 1,
-        text: "Who is the target audience for this prompt? (e.g., beginners, experts, general users, specific professionals)",
-        answer: ""
-      },
-      {
-        id: 2,
-        text: "What tone and style should the AI use? (e.g., formal, casual, persuasive, storytelling, conversational, technical)",
-        answer: ""
-      },
-      {
-        id: 3,
-        text: "What is the desired length or format? (e.g., short summary, medium explanation, long detailed guide, step-by-step, bullet points)",
-        answer: ""
-      },
-      {
-        id: 4,
-        text: "Should the AI provide examples or illustrations to support the response?",
-        answer: ""
-      },
-      {
-        id: 5,
-        text: "Are there specific keywords, concepts, or constraints that must be included?",
-        answer: ""
-      },
-      {
-        id: 6,
-        text: "Are there any additional constraints to consider? (e.g., time limits, resource limitations, style preferences)",
-        answer: ""
-      }
-    ];
+    setLoading(true);
+    setError('');
 
-    setQuestions(generatedQuestions);
-    setCurrentStep(2);
+    try {
+      const response = await GeminiService.generateClarifyingQuestions(userIdea, overInstructions);
+      
+      if (response.status === 'error') {
+        setError(response.error || 'An error occurred while generating questions');
+        return;
+      }
+
+      if (response.clarifyingQuestions) {
+        const generatedQuestions: Question[] = response.clarifyingQuestions.map((q, index) => ({
+          id: index + 1,
+          text: q,
+          answer: ""
+        }));
+        
+        setQuestions(generatedQuestions);
+        setCurrentStep(2);
+      }
+    } catch (err) {
+      setError('Failed to generate questions. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateAnswer = (id: number, answer: string) => {
@@ -65,41 +53,43 @@ function App() {
     );
   };
 
-  const generateFinalPrompt = () => {
+  const generateFinalPrompt = async () => {
     const answeredQuestions = questions.filter(q => q.answer.trim());
     
     if (answeredQuestions.length === 0) {
-      alert('Please answer at least one clarifying question to generate the optimized prompt.');
+      setError('Please answer at least one clarifying question to generate the optimized prompt.');
       return;
     }
 
-    // Construct the final optimized prompt following the framework
-    let prompt = `# Context and Task\n${userIdea}\n\n`;
-    prompt += `# Instructions\n${overInstructions}\n\n`;
-    
-    // Add clarifications based on answered questions
-    prompt += `# Specifications\n`;
-    answeredQuestions.forEach(q => {
-      const specification = getSpecificationFromQuestion(q.text, q.answer);
-      if (specification) {
-        prompt += `${specification}\n`;
+    setLoading(true);
+    setError('');
+
+    try {
+      const questionAnswerPairs = answeredQuestions.map(q => ({
+        question: q.text,
+        answer: q.answer
+      }));
+
+      const response = await GeminiService.generateOptimizedPrompt(
+        userIdea, 
+        overInstructions, 
+        questionAnswerPairs
+      );
+      
+      if (response.status === 'error') {
+        setError(response.error || 'An error occurred while generating the optimized prompt');
+        return;
       }
-    });
-    
-    prompt += `\n# Expected Output\nPlease provide a response that adheres to all the above requirements and specifications. Ensure your response is well-structured, clear, and directly addresses the task while following the specified tone, format, and constraints.`;
 
-    setFinalPrompt(prompt);
-    setCurrentStep(3);
-  };
-
-  const getSpecificationFromQuestion = (questionText: string, answer: string): string => {
-    if (questionText.includes('target audience')) return `**Target Audience**: ${answer}`;
-    if (questionText.includes('tone and style')) return `**Tone & Style**: ${answer}`;
-    if (questionText.includes('length or format')) return `**Format & Length**: ${answer}`;
-    if (questionText.includes('examples or illustrations')) return `**Examples Required**: ${answer}`;
-    if (questionText.includes('keywords') || questionText.includes('concepts')) return `**Keywords & Constraints**: ${answer}`;
-    if (questionText.includes('additional constraints')) return `**Additional Constraints**: ${answer}`;
-    return `**Additional Context**: ${answer}`;
+      if (response.optimizedPrompt) {
+        setFinalPrompt(response.optimizedPrompt);
+        setCurrentStep(3);
+      }
+    } catch (err) {
+      setError('Failed to generate optimized prompt. Please try again.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const copyToClipboard = async () => {
@@ -119,6 +109,7 @@ function App() {
     setCurrentStep(1);
     setFinalPrompt('');
     setCopied(false);
+    setError('');
   };
 
   return (
@@ -133,9 +124,30 @@ function App() {
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Transform your raw ideas into polished, AI-ready prompts through structured optimization
+            Transform your raw ideas into polished, AI-ready prompts using Gemini AI and prompt engineering best practices
           </p>
         </div>
+
+        {/* API Key Notice */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
+          <div className="flex items-start">
+            <AlertCircle className="w-5 h-5 text-yellow-600 mr-3 mt-0.5" />
+            <div className="text-sm text-yellow-800">
+              <p className="font-semibold mb-1">Setup Required:</p>
+              <p>To use this tool, you need to add your Gemini API key to the environment variables. Create a <code className="bg-yellow-100 px-1 rounded">.env</code> file with <code className="bg-yellow-100 px-1 rounded">VITE_GEMINI_API_KEY=your_api_key</code></p>
+            </div>
+          </div>
+        </div>
+
+        {/* Error Display */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+            <div className="flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-600 mr-3 mt-0.5" />
+              <p className="text-red-800">{error}</p>
+            </div>
+          </div>
+        )}
 
         {/* Progress Indicator */}
         <div className="flex items-center justify-center mb-8">
@@ -190,23 +202,31 @@ function App() {
             
             <button
               onClick={generateQuestions}
-              className="mt-8 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
+              disabled={loading}
+              className="mt-8 w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
             >
-              Generate Clarifying Questions
+              {loading ? (
+                <>
+                  <Loader className="w-4 h-4 animate-spin" />
+                  <span>Generating Questions...</span>
+                </>
+              ) : (
+                <span>Generate Clarifying Questions</span>
+              )}
             </button>
           </div>
         )}
 
-        {/* Step 2: Generate Clarifying Questions */}
+        {/* Step 2: Clarifying Questions */}
         {currentStep === 2 && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <MessageSquare className="w-6 h-6 text-blue-600 mr-3" />
-              Step 2: Generate Clarifying Questions
+              Step 2: Clarifying Questions
             </h2>
             
             <p className="text-gray-600 mb-8">
-              Based on your inputs, here are clarifying questions to refine your prompt. Answer the ones most relevant to your needs - you don't need to answer all of them.
+              Based on your inputs, here are AI-generated clarifying questions to refine your prompt. Answer the ones most relevant to your needs - you don't need to answer all of them.
             </p>
             
             <div className="space-y-6">
@@ -234,30 +254,38 @@ function App() {
               </button>
               <button
                 onClick={generateFinalPrompt}
-                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
+                disabled={loading}
+                className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-2"
               >
-                Generate Final Optimized Prompt
+                {loading ? (
+                  <>
+                    <Loader className="w-4 h-4 animate-spin" />
+                    <span>Generating Prompt...</span>
+                  </>
+                ) : (
+                  <span>Generate Final Optimized Prompt</span>
+                )}
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Final Prompt Assembly */}
+        {/* Step 3: Final Optimized Prompt */}
         {currentStep === 3 && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <CheckCircle className="w-6 h-6 text-green-600 mr-3" />
-              Step 3: Final Prompt Assembly
+              Step 3: Final Optimized Prompt
             </h2>
             
             <p className="text-gray-600 mb-6">
-              Your optimized prompt is ready! This structured prompt combines your original idea, overarching instructions, and clarifications into a clear, AI-ready format.
+              Your AI-optimized prompt is ready! This structured prompt follows prompt engineering best practices and is ready for use with any AI system.
             </p>
             
             <div className="relative">
               <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-sm overflow-x-auto">
                 <div className="mb-4 text-xs text-gray-500 font-mono">Final Optimized Prompt:</div>
-                <pre className="whitespace-pre-wrap font-mono leading-relaxed text-gray-800">
+                <pre className="whitespace-pre-wrap font-mono leading-relaxed text-gray-800 text-sm">
                   {finalPrompt}
                 </pre>
               </div>
@@ -294,7 +322,7 @@ function App() {
 
         {/* Footer */}
         <div className="text-center text-gray-500 text-sm">
-          <p>Transform your raw ideas into polished, AI-ready prompts through structured optimization</p>
+          <p>Powered by Gemini AI • Transform your raw ideas into polished, AI-ready prompts</p>
         </div>
       </div>
     </div>
