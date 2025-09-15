@@ -21,7 +21,7 @@ function App() {
       return;
     }
 
-    // Generate contextual questions based on the user's input
+    // Generate 3-6 clarifying questions based on the framework
     const generatedQuestions: Question[] = [
       {
         id: 1,
@@ -30,27 +30,27 @@ function App() {
       },
       {
         id: 2,
-        text: "What tone and style should the AI use? (e.g., formal, casual, conversational, authoritative, creative, technical)",
+        text: "What tone and style should the AI use? (e.g., formal, casual, persuasive, storytelling, conversational, technical)",
         answer: ""
       },
       {
         id: 3,
-        text: "What format and length do you prefer for the output? (e.g., brief summary, detailed explanation, step-by-step guide, bullet points, paragraph form)",
+        text: "What is the desired length or format? (e.g., short summary, medium explanation, long detailed guide, step-by-step, bullet points)",
         answer: ""
       },
       {
         id: 4,
-        text: "Should the AI provide examples, illustrations, or case studies to support the response?",
+        text: "Should the AI provide examples or illustrations to support the response?",
         answer: ""
       },
       {
         id: 5,
-        text: "Are there any specific keywords, concepts, or constraints that must be included or avoided?",
+        text: "Are there specific keywords, concepts, or constraints that must be included?",
         answer: ""
       },
       {
         id: 6,
-        text: "Are there any time, budget, or resource constraints the AI should consider?",
+        text: "Are there any additional constraints to consider? (e.g., time limits, resource limitations, style preferences)",
         answer: ""
       }
     ];
@@ -73,31 +73,33 @@ function App() {
       return;
     }
 
-    // Construct the final optimized prompt
-    let prompt = `# Task Overview\n${userIdea}\n\n`;
+    // Construct the final optimized prompt following the framework
+    let prompt = `# Context and Task\n${userIdea}\n\n`;
     prompt += `# Instructions\n${overInstructions}\n\n`;
     
-    // Add clarifications
-    prompt += `# Additional Context\n`;
+    // Add clarifications based on answered questions
+    prompt += `# Specifications\n`;
     answeredQuestions.forEach(q => {
-      const category = getCategoryFromQuestion(q.text);
-      prompt += `**${category}**: ${q.answer}\n`;
+      const specification = getSpecificationFromQuestion(q.text, q.answer);
+      if (specification) {
+        prompt += `${specification}\n`;
+      }
     });
     
-    prompt += `\n# Expected Output\nPlease provide a response that adheres to all the above requirements and context. Ensure your response is well-structured, clear, and directly addresses the task while following the specified tone, format, and constraints.`;
+    prompt += `\n# Expected Output\nPlease provide a response that adheres to all the above requirements and specifications. Ensure your response is well-structured, clear, and directly addresses the task while following the specified tone, format, and constraints.`;
 
     setFinalPrompt(prompt);
     setCurrentStep(3);
   };
 
-  const getCategoryFromQuestion = (questionText: string): string => {
-    if (questionText.includes('audience')) return 'Target Audience';
-    if (questionText.includes('tone')) return 'Tone & Style';
-    if (questionText.includes('format')) return 'Format & Length';
-    if (questionText.includes('examples')) return 'Examples Required';
-    if (questionText.includes('keywords')) return 'Keywords & Constraints';
-    if (questionText.includes('time') || questionText.includes('budget')) return 'Resource Constraints';
-    return 'Additional Context';
+  const getSpecificationFromQuestion = (questionText: string, answer: string): string => {
+    if (questionText.includes('target audience')) return `**Target Audience**: ${answer}`;
+    if (questionText.includes('tone and style')) return `**Tone & Style**: ${answer}`;
+    if (questionText.includes('length or format')) return `**Format & Length**: ${answer}`;
+    if (questionText.includes('examples or illustrations')) return `**Examples Required**: ${answer}`;
+    if (questionText.includes('keywords') || questionText.includes('concepts')) return `**Keywords & Constraints**: ${answer}`;
+    if (questionText.includes('additional constraints')) return `**Additional Constraints**: ${answer}`;
+    return `**Additional Context**: ${answer}`;
   };
 
   const copyToClipboard = async () => {
@@ -131,7 +133,7 @@ function App() {
             </h1>
           </div>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Transform your raw ideas into polished, AI-ready prompts with our intelligent optimization process
+            Transform your raw ideas into polished, AI-ready prompts through structured optimization
           </p>
         </div>
 
@@ -139,25 +141,25 @@ function App() {
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center space-x-4">
             <div className={`flex items-center justify-center w-10 h-10 rounded-full ${currentStep >= 1 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'} transition-colors duration-300`}>
-              <Lightbulb className="w-5 h-5" />
+              <span className="text-sm font-bold">1</span>
             </div>
             <div className={`h-1 w-16 ${currentStep >= 2 ? 'bg-blue-600' : 'bg-gray-200'} transition-colors duration-300`}></div>
             <div className={`flex items-center justify-center w-10 h-10 rounded-full ${currentStep >= 2 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'} transition-colors duration-300`}>
-              <MessageSquare className="w-5 h-5" />
+              <span className="text-sm font-bold">2</span>
             </div>
             <div className={`h-1 w-16 ${currentStep >= 3 ? 'bg-blue-600' : 'bg-gray-200'} transition-colors duration-300`}></div>
             <div className={`flex items-center justify-center w-10 h-10 rounded-full ${currentStep >= 3 ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-500'} transition-colors duration-300`}>
-              <CheckCircle className="w-5 h-5" />
+              <span className="text-sm font-bold">3</span>
             </div>
           </div>
         </div>
 
-        {/* Step 1: Initial Inputs */}
+        {/* Step 1: Inputs */}
         {currentStep === 1 && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <Lightbulb className="w-6 h-6 text-blue-600 mr-3" />
-              Step 1: Initial Inputs
+              Step 1: Inputs
             </h2>
             
             <div className="space-y-6">
@@ -195,16 +197,16 @@ function App() {
           </div>
         )}
 
-        {/* Step 2: Clarifying Questions */}
+        {/* Step 2: Generate Clarifying Questions */}
         {currentStep === 2 && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <MessageSquare className="w-6 h-6 text-blue-600 mr-3" />
-              Step 2: Clarifying Questions
+              Step 2: Generate Clarifying Questions
             </h2>
             
             <p className="text-gray-600 mb-8">
-              Answer the questions below to help refine your prompt. You don't need to answer all questions - focus on the ones most relevant to your needs.
+              Based on your inputs, here are clarifying questions to refine your prompt. Answer the ones most relevant to your needs - you don't need to answer all of them.
             </p>
             
             <div className="space-y-6">
@@ -234,28 +236,31 @@ function App() {
                 onClick={generateFinalPrompt}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 px-6 rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-[1.02] shadow-lg"
               >
-                Generate Optimized Prompt
+                Generate Final Optimized Prompt
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 3: Final Optimized Prompt */}
+        {/* Step 3: Final Prompt Assembly */}
         {currentStep === 3 && (
           <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-gray-100">
             <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
               <CheckCircle className="w-6 h-6 text-green-600 mr-3" />
-              Step 3: Final Optimized Prompt
+              Step 3: Final Prompt Assembly
             </h2>
             
             <p className="text-gray-600 mb-6">
-              Your optimized prompt is ready! Copy it and use it with any AI assistant.
+              Your optimized prompt is ready! This structured prompt combines your original idea, overarching instructions, and clarifications into a clear, AI-ready format.
             </p>
             
             <div className="relative">
-              <pre className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-sm overflow-x-auto whitespace-pre-wrap font-mono leading-relaxed">
-                {finalPrompt}
-              </pre>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-sm overflow-x-auto">
+                <div className="mb-4 text-xs text-gray-500 font-mono">Final Optimized Prompt:</div>
+                <pre className="whitespace-pre-wrap font-mono leading-relaxed text-gray-800">
+                  {finalPrompt}
+                </pre>
+              </div>
               <button
                 onClick={copyToClipboard}
                 className={`absolute top-4 right-4 flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
@@ -289,7 +294,7 @@ function App() {
 
         {/* Footer */}
         <div className="text-center text-gray-500 text-sm">
-          <p>Transform your ideas into powerful AI prompts with structured optimization</p>
+          <p>Transform your raw ideas into polished, AI-ready prompts through structured optimization</p>
         </div>
       </div>
     </div>
