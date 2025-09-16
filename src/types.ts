@@ -1,6 +1,8 @@
 export interface Question {
   id: number;
   text: string;
+  options?: string[];
+  selectedOptions: string[];
   answer: string;
 }
 
@@ -15,9 +17,14 @@ export interface OptimizedResult {
   optimizedPrompt: string;
 }
 
+export interface QuestionWithOptions {
+  text: string;
+  options: string[];
+}
+
 export interface GeminiResponse {
   status: 'success' | 'error';
-  clarifyingQuestions?: string[];
+  clarifyingQuestions?: QuestionWithOptions[];
   optimizedPrompt?: string;
   results?: OptimizedResult[];
   error?: string;

@@ -23,13 +23,20 @@ Based on the user's idea and instructions, generate questions that cover:
 - Output format
 - Examples if relevant
 
+For each question, provide 3-5 suggested answer options that users can select from.
+
 Return your response as a JSON object with this exact format:
 {
   "status": "success",
   "clarifyingQuestions": [
-    "Question 1",
-    "Question 2", 
-    "Question 3"
+    {
+      "text": "Question 1",
+      "options": ["Option A", "Option B", "Option C", "Option D"]
+    },
+    {
+      "text": "Question 2", 
+      "options": ["Option A", "Option B", "Option C"]
+    }
   ]
 }
 
@@ -37,7 +44,7 @@ User's Instructions: ${instructions}
 User's Idea: ${idea}`;
 
     try {
-      const response = await fetch(`${GEMINI_API_URL}/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch(`${GEMINI_API_URL}/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,11 +78,22 @@ User's Idea: ${idea}`;
         return {
           status: 'success',
           clarifyingQuestions: [
-            'Who is the target audience for this prompt?',
-            'What tone and style should the AI use?',
-            'What is the desired length or format?',
-            'Should the AI provide examples or illustrations?',
-            'Are there specific keywords or constraints to include?'
+            {
+              text: 'Who is the target audience for this prompt?',
+              options: ['General audience', 'Technical professionals', 'Students', 'Business executives', 'Creative professionals']
+            },
+            {
+              text: 'What tone and style should the AI use?',
+              options: ['Professional/Formal', 'Conversational/Casual', 'Persuasive', 'Educational', 'Creative/Storytelling']
+            },
+            {
+              text: 'What is the desired length or format?',
+              options: ['Brief summary', 'Detailed explanation', 'Step-by-step guide', 'Bullet points', 'Essay format']
+            },
+            {
+              text: 'Should the AI provide examples or illustrations?',
+              options: ['Yes, with examples', 'Yes, with analogies', 'No examples needed', 'Visual descriptions', 'Case studies']
+            }
           ]
         };
       }
@@ -127,7 +145,7 @@ Return your response as a JSON object with this exact format:
 Make the prompt clear, structured, unambiguous, and easy for an AI to follow.`;
 
     try {
-      const response = await fetch(`${GEMINI_API_URL}/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch(`${GEMINI_API_URL}/models/gemini-2.5-pro:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -5,9 +5,19 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 export const FREE_MODELS: OpenRouterModel[] = [
   {
+    id: 'mistralai/mistral-7b-instruct:free',
+    name: 'Mistral 7B Instruct',
+    description: 'Efficient and capable instruction model'
+  },
+  {
     id: 'meta-llama/llama-3.2-3b-instruct:free',
-    name: 'Llama 3.2 3B Instruct',
-    description: 'Meta\'s latest compact instruction model'
+    name: 'LLaMA 3.2 3B',
+    description: 'Meta\'s open-source language model'
+  },
+  {
+    id: 'huggingface/zephyr-7b-beta:free',
+    name: 'Zephyr 7B (HuggingFace)',
+    description: 'Fine-tuned for helpful conversations'
   },
   {
     id: 'microsoft/phi-3-mini-128k-instruct:free',
@@ -17,21 +27,11 @@ export const FREE_MODELS: OpenRouterModel[] = [
   {
     id: 'google/gemma-2-9b-it:free',
     name: 'Gemma 2 9B IT',
-    description: 'Google\'s improved instruction-tuned model'
-  },
-  {
-    id: 'mistralai/mistral-7b-instruct:free',
-    name: 'Mistral 7B Instruct',
-    description: 'Efficient and capable instruction model'
-  },
-  {
-    id: 'huggingface/zephyr-7b-beta:free',
-    name: 'Zephyr 7B Beta',
-    description: 'Fine-tuned for helpful conversations'
+    description: 'Google\'s instruction-tuned model'
   },
   {
     id: 'openchat/openchat-7b:free',
-    name: 'OpenChat 7B',
+    name: 'OpenChat 7B (Open Source)',
     description: 'Open-source conversational AI model'
   }
 ];
@@ -56,13 +56,20 @@ Based on the user's idea and instructions, generate questions that cover:
 - Output format
 - Examples if relevant
 
+For each question, provide 3-5 suggested answer options that users can select from.
+
 Return your response as a JSON object with this exact format:
 {
   "status": "success",
   "clarifyingQuestions": [
-    "Question 1",
-    "Question 2", 
-    "Question 3"
+    {
+      "text": "Question 1",
+      "options": ["Option A", "Option B", "Option C", "Option D"]
+    },
+    {
+      "text": "Question 2", 
+      "options": ["Option A", "Option B", "Option C"]
+    }
   ]
 }
 
@@ -111,11 +118,22 @@ User's Idea: ${idea}`;
         return {
           status: 'success',
           clarifyingQuestions: [
-            'Who is the target audience for this prompt?',
-            'What tone and style should the AI use?',
-            'What is the desired length or format?',
-            'Should the AI provide examples or illustrations?',
-            'Are there specific keywords or constraints to include?'
+            {
+              text: 'Who is the target audience for this prompt?',
+              options: ['General audience', 'Technical professionals', 'Students', 'Business executives', 'Creative professionals']
+            },
+            {
+              text: 'What tone and style should the AI use?',
+              options: ['Professional/Formal', 'Conversational/Casual', 'Persuasive', 'Educational', 'Creative/Storytelling']
+            },
+            {
+              text: 'What is the desired length or format?',
+              options: ['Brief summary', 'Detailed explanation', 'Step-by-step guide', 'Bullet points', 'Essay format']
+            },
+            {
+              text: 'Should the AI provide examples or illustrations?',
+              options: ['Yes, with examples', 'Yes, with analogies', 'No examples needed', 'Visual descriptions', 'Case studies']
+            }
           ]
         };
       }
