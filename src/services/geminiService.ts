@@ -37,7 +37,7 @@ User's Instructions: ${instructions}
 User's Idea: ${idea}`;
 
     try {
-      const response = await fetch(`${GEMINI_API_URL}/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch(`${GEMINI_API_URL}/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ Return your response as a JSON object with this exact format:
 Make the prompt clear, structured, unambiguous, and easy for an AI to follow.`;
 
     try {
-      const response = await fetch(`${GEMINI_API_URL}/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      const response = await fetch(`${GEMINI_API_URL}/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
