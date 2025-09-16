@@ -5,9 +5,9 @@ const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
 export const FREE_MODELS: OpenRouterModel[] = [
   {
-    id: 'qwen/qwen-2-7b-instruct:free',
-    name: 'Qwen 2 7B Instruct',
-    description: 'Fast and efficient 7B parameter model'
+    id: 'meta-llama/llama-3.2-3b-instruct:free',
+    name: 'Llama 3.2 3B Instruct',
+    description: 'Meta\'s latest compact instruction model'
   },
   {
     id: 'microsoft/phi-3-mini-128k-instruct:free',
@@ -15,24 +15,24 @@ export const FREE_MODELS: OpenRouterModel[] = [
     description: 'Microsoft\'s compact but powerful model'
   },
   {
-    id: 'microsoft/phi-3-medium-128k-instruct:free',
-    name: 'Phi-3 Medium 128K',
-    description: 'Balanced performance and efficiency'
-  },
-  {
-    id: 'google/gemma-7b-it:free',
-    name: 'Gemma 7B IT',
-    description: 'Google\'s instruction-tuned model'
-  },
-  {
-    id: 'meta-llama/llama-3-8b-instruct:free',
-    name: 'Llama 3 8B Instruct',
-    description: 'Meta\'s latest instruction-following model'
+    id: 'google/gemma-2-9b-it:free',
+    name: 'Gemma 2 9B IT',
+    description: 'Google\'s improved instruction-tuned model'
   },
   {
     id: 'mistralai/mistral-7b-instruct:free',
     name: 'Mistral 7B Instruct',
     description: 'Efficient and capable instruction model'
+  },
+  {
+    id: 'huggingface/zephyr-7b-beta:free',
+    name: 'Zephyr 7B Beta',
+    description: 'Fine-tuned for helpful conversations'
+  },
+  {
+    id: 'openchat/openchat-7b:free',
+    name: 'OpenChat 7B',
+    description: 'Open-source conversational AI model'
   }
 ];
 
