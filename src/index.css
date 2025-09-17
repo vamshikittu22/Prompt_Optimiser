@@ -2,6 +2,7 @@
 
 @tailwind base;
 @tailwind components;
+<<<<<<< HEAD
 @tailwind utilities;
 
 @layer base {
@@ -122,3 +123,5 @@
     }
   }
 }
+=======
+>>>>>>> d623e9558103fe2b87c1ef0d030ac7f83d4db259
