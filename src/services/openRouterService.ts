@@ -7,32 +7,38 @@ export const FREE_MODELS: OpenRouterModel[] = [
   {
     id: 'mistralai/mistral-7b-instruct:free',
     name: 'Mistral 7B Instruct',
-    description: 'Efficient and capable instruction model'
+    description: 'Efficient and capable instruction model',
+    provider: 'openrouter'
   },
   {
     id: 'meta-llama/llama-3.2-3b-instruct:free',
     name: 'LLaMA 3.2 3B',
-    description: 'Meta\'s open-source language model'
+    description: 'Meta\'s open-source language model',
+    provider: 'openrouter'
   },
   {
     id: 'huggingface/zephyr-7b-beta:free',
     name: 'Zephyr 7B (HuggingFace)',
-    description: 'Fine-tuned for helpful conversations'
+    description: 'Fine-tuned for helpful conversations',
+    provider: 'openrouter'
   },
   {
     id: 'microsoft/phi-3-mini-128k-instruct:free',
     name: 'Phi-3 Mini 128K',
-    description: 'Microsoft\'s compact but powerful model'
+    description: 'Microsoft\'s compact but powerful model',
+    provider: 'openrouter'
   },
   {
     id: 'google/gemma-2-9b-it:free',
     name: 'Gemma 2 9B IT',
-    description: 'Google\'s instruction-tuned model'
+    description: 'Google\'s instruction-tuned model',
+    provider: 'openrouter'
   },
   {
     id: 'openchat/openchat-7b:free',
     name: 'OpenChat 7B (Open Source)',
-    description: 'Open-source conversational AI model'
+    description: 'Open-source conversational AI model',
+    provider: 'openrouter'
   }
 ];
 
