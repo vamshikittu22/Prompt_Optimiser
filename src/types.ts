@@ -6,6 +6,13 @@ export interface Question {
   answer: string;
 }
 
+export interface PromptingStyle {
+  id: string;
+  name: string;
+  explanation: string;
+  example: string;
+}
+
 export interface OpenRouterModel {
   id: string;
   name: string;
@@ -15,6 +22,7 @@ export interface OpenRouterModel {
 export interface OptimizedResult {
   model: string;
   optimizedPrompt: string;
+  appliedStyles?: string[];
 }
 
 export interface QuestionWithOptions {
@@ -24,8 +32,10 @@ export interface QuestionWithOptions {
 
 export interface GeminiResponse {
   status: 'success' | 'error';
+  suggestedStyles?: PromptingStyle[];
   clarifyingQuestions?: QuestionWithOptions[];
   optimizedPrompt?: string;
+  appliedStyles?: string[];
   results?: OptimizedResult[];
   error?: string;
 }
