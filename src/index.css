@@ -2,7 +2,6 @@
 
 @tailwind base;
 @tailwind components;
-<<<<<<< HEAD
 @tailwind utilities;
 
 @layer base {
@@ -108,7 +107,6 @@
   
   /* Custom animations */
   @keyframes fadeIn {
-    from { opacity: 0; }
     to { opacity: 1; }
   }
   
@@ -123,5 +121,4 @@
     }
   }
 }
-=======
->>>>>>> d623e9558103fe2b87c1ef0d030ac7f83d4db259
+

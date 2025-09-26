@@ -1,0 +1,80 @@
+{
+  "id": "task_001",
+  "timestamp": "2025-09-26T14:20:00-05:00",
+  "idea": "[User's initial idea or request]",
+  "instructions": "[Specific instructions for the task]",
+  "suggestedStyles": [
+    {
+      "id": "style_001",
+      "name": "Instruction-based",
+      "explanation": "Clear, direct instructions for specific output.",
+      "example": "Write a 200-word summary of quantum computing basics.",
+      "selected": false
+    },
+    {
+      "id": "style_002",
+      "name": "Role/Persona",
+      "explanation": "AI assumes a specific role or expertise.",
+      "example": "As a senior software engineer, explain how to optimize database queries.",
+      "selected": false
+    },
+    {
+      "id": "style_003",
+      "name": "Chain-of-Thought",
+      "explanation": "Shows step-by-step reasoning process.",
+      "example": "Let's think step by step to solve this math problem...",
+      "selected": false
+    }
+  ],
+  "clarifyingQuestions": [
+    {
+      "id": "q_001",
+      "text": "What is the primary goal of your prompt?",
+      "options": ["Generate content", "Analyze data", "Solve a problem", "Other (please specify)"],
+      "answer": ""
+    },
+    {
+      "id": "q_002",
+      "text": "Who is the intended audience?",
+      "options": ["Technical experts", "General public", "Business professionals", "Students"],
+      "answer": ""
+    },
+    {
+      "id": "q_003",
+      "text": "What tone would you prefer?",
+      "options": ["Formal", "Conversational", "Persuasive", "Instructive"],
+      "answer": ""
+    },
+    {
+      "id": "q_004",
+      "text": "What is the desired output format?",
+      "options": ["Bullet points", "Paragraphs", "JSON", "Markdown"],
+      "answer": ""
+    },
+    {
+      "id": "q_005",
+      "text": "Are there any specific constraints?",
+      "options": ["Word limit", "Technical level", "Citation requirements", "None"],
+      "answer": ""
+    }
+  ],
+  "optimizedPrompt": {
+    "role": "",
+    "task": "",
+    "context": "",
+    "styleApplication": "",
+    "constraints": [],
+    "styleTone": "",
+    "audience": "",
+    "format": "",
+    "mandatoryDetails": []
+  },
+  "status": "in-progress",
+  "versionHistory": [
+    {
+      "timestamp": "2025-09-26T14:20:00-05:00",
+      "action": "Task created",
+      "details": "Initial task template created."
+    }
+  ]
+}
