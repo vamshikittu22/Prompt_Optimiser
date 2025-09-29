@@ -10,34 +10,34 @@ module.exports = {
       colors: {
         // Primary colors
         primary: {
-          50: '#f0f9ff',  // Lightest - Background
-          100: '#e0f2fe',
-          200: '#bae6fd',
-          300: '#7dd3fc',
-          400: '#38bdf8',  // Accent
-          500: '#0ea5e9',
-          600: '#0284c7',  // Primary
-          700: '#0369a1',
-          800: '#075985',  // Darker text/buttons
-          900: '#0c4a6e',  // Darkest - Headers
+          50: '#eff6ff',  // Slightly darker background
+          100: '#dbeafe',
+          200: '#bfdbfe',
+          300: '#93c5fd',
+          400: '#60a5fa',  // Accent
+          500: '#3b82f6',  // Primary blue
+          600: '#2563eb',  // Primary
+          700: '#1d4ed8',
+          800: '#1e40af',  // Darker text/buttons
+          900: '#1e3a8a',  // Darkest - Headers
         },
         // Accent colors
         accent: {
           orange: '#f97316',  // Primary CTA
           green: '#10b981',   // Success/Secondary CTA
         },
-        // Neutral colors
+        // Neutral colors - IMPROVED CONTRAST FOR BETTER READABILITY
         neutral: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+          50: '#fafafa',
+          100: '#f4f4f5',
+          200: '#e4e4e7',
+          300: '#d4d4d8',
+          400: '#a1a1aa',   // Darker for better contrast
+          500: '#737373',   // Much darker than before
+          600: '#52525b',
+          700: '#3f3f46',
+          800: '#27272a',
+          900: '#171717',   // Much darker for maximum contrast
         },
       },
       // Typography
